@@ -22,6 +22,12 @@ resource "kubernetes_service" "axonserver" {
       cluster = var.cluster_name
     }
     port {
+      name        = "axonserver"
+      protocol    = "TCP"
+      port        = 8024
+      target_port = 8024
+    }
+    port {
       name        = "client-grpc"
       protocol    = "TCP"
       port        = 8124
