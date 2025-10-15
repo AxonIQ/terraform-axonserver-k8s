@@ -1,7 +1,7 @@
-variable "axonserver_release" {
-  description = "Axonserver Release"
+variable "axonserver_tag" {
+  description = "Axonserver Tag: https://hub.docker.com/r/axoniq/axonserver/tags"
   type        = string
-  default     = "2024.1.4"
+  default     = "latest"
 }
 
 variable "create_namespace" {
@@ -43,17 +43,6 @@ variable "console_authentication" {
   description = "Console Authentication token"
   type        = string
   default     = ""
-}
-
-variable "java_version" {
-  description = "Java runtime"
-  type        = number
-  default     = "17"
-
-  validation {
-    condition     = can(regex("^(17|11)$", var.java_version))
-    error_message = "The Java version is not supported, it must be either '17' or '11'."
-  }
 }
 
 variable "resources_limits_cpu" {
