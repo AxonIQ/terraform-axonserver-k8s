@@ -1,5 +1,4 @@
-# Terraform Module to deploy Axon Server on Kubernetes
-
+# Terraform Module to Deploy Axon Server on Kubernetes
 
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-3069DE?style=for-the-badge&logo=kubernetes&logoColor=white) 
 ![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
@@ -7,15 +6,56 @@
 ![License](https://badgen.net/github/license/AxonIQ/terraform-axonserver-k8s/)
 ![Release](https://badgen.net/github/release/AxonIQ/terraform-axonserver-k8s/)
 
-<p align="center">
-  <img height="240" src="https://www.axoniq.io/hs-fs/hubfs/Axon_Server_Enterprise_-_Dark_icon.png?width=239&height=240&name=Axon_Server_Enterprise_-_Dark_icon.png">
-  <h3 align="center">Run modern applications seamlessly with zero-configuration message routing and event storage</h3>
-</p>
-
 ---
 
+## Usage
 
-## USAGE
+### Single Node Deployment
+
+For a single node deployment, you don't need to provide a license or console authentication:
+
+```terraform
+module "axonserver" {
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.14"
+  
+  axonserver_tag = "2025.1.5-jdk-17"
+
+  nodes_number  = 1
+  cluster_name  = "axonserver"
+  public_domain = "axoniq.net"
+  namespace     = "axonserver"
+}
+```
+
+### Multi-Node Cluster Deployment
+
+For multi-node deployments (clustering), you must provide either a license file or console authentication token:
+
+```terraform
+module "axonserver" {
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.14"
+  
+  axonserver_tag = "2025.1.5-jdk-17"
+
+  nodes_number  = 3
+  cluster_name  = "axonserver"
+  public_domain = "axoniq.net"
+  namespace     = "axonserver"
+  
+  # Option 1: Provide a license file
+  axonserver_license_path = file("${path.module}/axoniq.license")
+  
+  # Option 2: Or use console authentication (Axon Server Cloud)
+  # console_authentication = "your-console-token"
+  
+  # Optional: Custom properties file
+  axonserver_properties = file("${path.module}/axonserver.properties")
+}
+```
+
+### GKE Network Endpoint Groups (NEGs)
+
+To enable GKE NEGs for direct pod communication:
 
 ```terraform
 module "axonserver" {
@@ -29,62 +69,82 @@ module "axonserver" {
   namespace     = "axonserver"
   
   axonserver_license_path = file("${path.module}/axoniq.license")
-  axonserver_properties   = file("${path.module}/axonserver.properties")
+  
+  # Enable NEGs for GKE
+  gke_neg      = true
+  gke_neg_zone = ["us-central1-a", "us-central1-b", "us-central1-c"]
 }
 ```
 
-
 ## Inputs
 
-| Name                                                                                                        | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Type                                                                                                                       | Default                          | Required |
-|-------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|----------------------------------|:--------:|
-| <a name="input_axonserver_tag"></a> [axonserver\_tag](#input\_axonserver\_release)                          | [Axon Server Tag](https://hub.docker.com/r/axoniq/axonserver/tags) namespace.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `string`                                                                                                                   | `"latest"`                       |    no    |
-| <a name="input_namespace"></a> [namespace](#input\_namespace)                                               | Kubernetes cluster namespace.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | `string`                                                                                                                   | `"axonserver"`                   |   yes    |
-| <a name="input_create_namespace"></a> [create\_namespace](#input\_create\_namespace)                        | Condition to create the namespace or to use and existing one.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | `bool`                                                                                                                     | `true`                           |    no    |
-| <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name)                                    | Axon Server cluster name.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `string`                                                                                                                   | `""`                             |   yes    |
-| <a name="input_nodes_number"></a> [nodes\_number](#input\_nodes\_number)                                    | The number of nodes deployed inside the cluster.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `number`                                                                                                                   | `1`                              |   yes    |
-| <a name="input_public_domain"></a> [public\_domain](#input\_public\_domain)                                 | The domain that is added to the hostname when returning hostnames to client applications.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `string`                                                                                                                   | `""`                             |   yes    |
-| <a name="input_axonserver_license_path"></a> [axonserver\_license\_path](#input\_axonserver\_license\_path) | The path to the Axon Server license                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `string`                                                                                                                   | `""`                             |   yes    |
-| <a name="input_axonserver_properties"></a> [axonserver\_properties](#input\_axonserver\_properties)         | The path to the Axon Server properties file                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `string`                                                                                                                   | `""`                             |    no    |
-| <a name="input_console_authentication"></a> [console\_authentication](#input\_console\_authentication)      | Console authentication token                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `string`                                                                                                                   | `""`                             |    no    |
-| <a name="input_resources_limits_cpu"></a> [resources\_limits\_cpu](#input\_resources\_limits\_cpu)                                    | spec.container.resources.limits.cpu                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `number`                                                                                                                   | `"1"`                             |    no    |
-| <a name="input_resources_limits_memory"></a> [resources\_limits\_memory](#input\_resources\_limits\_memory)                           | spec.container.resources.limits.memory                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `string`                                                                                                                   | `"1Gi"`                           |    no    |
-| <a name="input_resources_requests_cpu"></a> [resources\_requests\_cpu](#input\_resources\_requests\_cpu)                              | spec.container.resources.requests.cpu                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `number`                                                                                                                   | `"1"`                             |    no    |
-| <a name="input_resources_limits_memory"></a> [resources\_limits\_memory](#input\_resources\_limits\_memory)                                    | spec.container.resources.limits.memory                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `string`                                                                                                                   | `"1Gi"`                             |    no    |
-| <a name="input_events_storage"></a> [events\_storage](#input\_events\_storage)                                    | Events PVC storage                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `string`                                                                                                                   | `"5Gi"`                             |    no    |
-| <a name="input_log_storage"></a> [log\_storage](#input\_log\_storage)                                    | Log PVC storage                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `string`                                                                                                                   | `"2Gi"`                             |    no    |
-| <a name="input_data_storage"></a> [data\_storage](#input\_data\_storage)                                    | Data PVC storage                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `string`                                                                                                                   | `"10Gi"`                             |    no    |
-| <a name="input_plugins_storage"></a> [plugins\_storage](#input\_plugins\_storage)                           | Plugins PVC storage                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `string`                                                                                                                   | `"1Gi"`                              |    no    |
-| <a name="input_license_storage"></a> [license\_storage](#input\_license\_storage)                           | License PVC storage                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `string`                                                                                                                   | `"1Gi"`                              |    no    |
-| <a name="input_devmode_enabled"></a> [devmode\_enabled](#input\_devmode\_enabled)                            | Axon Server devmode                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `bool`                                                                                                                     | `false`                              |    no    |
-| <a name="input_assign_pods_to_different_nodes"></a> [assign\_pods\_to\_different\_nodes](#input\_assign\_pods\_to\_different\_nodes)                            | Avoid the co location of the replicas on the same node                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `bool`                                                                                                                     | `false`                              |    no    |
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_axonserver_tag"></a> [axonserver_tag](#input_axonserver_tag) | [Axon Server Tag](https://hub.docker.com/r/axoniq/axonserver/tags) | `string` | `"latest"` | no |
+| <a name="input_namespace"></a> [namespace](#input_namespace) | Kubernetes cluster namespace | `string` | `"axonserver"` | no |
+| <a name="input_create_namespace"></a> [create_namespace](#input_create_namespace) | Whether to create the namespace or use an existing one | `bool` | `true` | no |
+| <a name="input_cluster_name"></a> [cluster_name](#input_cluster_name) | Axon Server cluster name | `string` | `""` | yes |
+| <a name="input_nodes_number"></a> [nodes_number](#input_nodes_number) | Number of Axon Server nodes to deploy. When > 1, either `console_authentication` or `axonserver_license_path` is required | `number` | `1` | yes |
+| <a name="input_public_domain"></a> [public_domain](#input_public_domain) | The domain that is added to the hostname when returning hostnames to client applications | `string` | `""` | yes |
+| <a name="input_axonserver_license_path"></a> [axonserver_license_path](#input_axonserver_license_path) | Path to the Axon Server license file. Required for multi-node deployments (nodes_number > 1) unless `console_authentication` is provided | `string` | `""` | conditional |
+| <a name="input_console_authentication"></a> [console_authentication](#input_console_authentication) | Console authentication token for Axon Server Cloud. Required for multi-node deployments (nodes_number > 1) unless `axonserver_license_path` is provided | `string` | `""` | conditional |
+| <a name="input_axonserver_properties"></a> [axonserver_properties](#input_axonserver_properties) | Custom Axon Server properties file content. If not provided, a default configuration will be generated | `string` | `""` | no |
+| <a name="input_resources_limits_cpu"></a> [resources_limits_cpu](#input_resources_limits_cpu) | CPU resource limits for Axon Server pods | `number` | `1` | no |
+| <a name="input_resources_limits_memory"></a> [resources_limits_memory](#input_resources_limits_memory) | Memory resource limits for Axon Server pods | `string` | `"1Gi"` | no |
+| <a name="input_resources_requests_cpu"></a> [resources_requests_cpu](#input_resources_requests_cpu) | CPU resource requests for Axon Server pods | `number` | `1` | no |
+| <a name="input_resources_requests_memory"></a> [resources_requests_memory](#input_resources_requests_memory) | Memory resource requests for Axon Server pods | `string` | `"1Gi"` | no |
+| <a name="input_events_storage"></a> [events_storage](#input_events_storage) | Persistent volume size for event storage | `string` | `"5Gi"` | no |
+| <a name="input_log_storage"></a> [log_storage](#input_log_storage) | Persistent volume size for log storage | `string` | `"2Gi"` | no |
+| <a name="input_data_storage"></a> [data_storage](#input_data_storage) | Persistent volume size for data storage | `string` | `"10Gi"` | no |
+| <a name="input_plugins_storage"></a> [plugins_storage](#input_plugins_storage) | Persistent volume size for plugins storage | `string` | `"1Gi"` | no |
+| <a name="input_license_storage"></a> [license_storage](#input_license_storage) | Persistent volume size for license storage (only used with console_authentication) | `string` | `"1Gi"` | no |
+| <a name="input_devmode_enabled"></a> [devmode_enabled](#input_devmode_enabled) | Enable Axon Server development mode (disables security features) | `bool` | `false` | no |
+| <a name="input_assign_pods_to_different_nodes"></a> [assign_pods_to_different_nodes](#input_assign_pods_to_different_nodes) | Use pod anti-affinity to avoid co-location of replicas on the same Kubernetes node | `bool` | `false` | no |
+| <a name="input_gke_neg"></a> [gke_neg](#input_gke_neg) | Enable GKE Network Endpoint Groups (NEGs) for direct pod communication. When enabled, `gke_neg_zone` must be provided | `bool` | `false` | no |
+| <a name="input_gke_neg_zone"></a> [gke_neg_zone](#input_gke_neg_zone) | List of GKE zones for NEG configuration. Required when `gke_neg` is true | `list(string)` | `[]` | conditional |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_axonserver_token"></a> [axonserver\_token](#output\_axonserver\_token) | The Axon Server token, generated by `random_uuid` |
+| <a name="output_axonserver_token"></a> [axonserver_token](#output_axonserver_token) | The Axon Server internal token, automatically generated by Terraform |
+
+## Important Notes
+
+### Clustering Requirements
+
+When deploying a multi-node cluster (`nodes_number > 1`), you must provide **one** of the following:
+- **`axonserver_license_path`**: Path to your Axon Server Enterprise license file
+- **`console_authentication`**: Authentication token for Axon Server Cloud
+
+Single node deployments (`nodes_number = 1`) do not require either of these parameters.
+
+### GKE Network Endpoint Groups
+
+When enabling GKE NEGs (`gke_neg = true`), you must provide at least one zone in `gke_neg_zone`. This feature creates Network Endpoint Groups for direct pod communication, useful for:
+- Load balancing directly to pods
+- Bypassing kube-proxy
+- Improved performance for gRPC connections
 
 ## Providers
 
-| Name                                                       | Version |
-|------------------------------------------------------------|---------|
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.31.0  |
-| <a name="provider_random"></a> [random](#provider\_random)             | 3.6.2   |
-| <a name="provider_template"></a> [template](#provider\_template)       | 2.2.0   |
+| Name | Version |
+|------|---------|
+| <a name="provider_kubernetes"></a> [kubernetes](#provider_kubernetes) | >= 2.31.0 |
+| <a name="provider_random"></a> [random](#provider_random) | >= 3.6.2 |
+| <a name="provider_template"></a> [template](#provider_template) | >= 2.2.0 |
 
 ## Requirements
 
-| Name                                                                      | Version  |
-|---------------------------------------------------------------------------|----------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.0 |
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement_terraform) | >= 1.9.0 |
 
-
-## LICENSE
+## License
 
 Apache 2 Licensed. See [LICENSE](LICENSE) for full details.
 
-## AUTHORS
+## Authors
 
 <a href="https://github.com/AxonIQ/terraform-axonserver-k8s/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=AxonIQ/terraform-axonserver-k8s" />
