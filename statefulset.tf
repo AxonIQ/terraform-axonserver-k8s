@@ -1,6 +1,16 @@
 resource "kubernetes_stateful_set" "axonserver" {
   count = var.nodes_number
 
+  lifecycle {
+    precondition {
+      condition = (
+        var.nodes_number == 1 ||
+        (var.nodes_number > 1 && (length(var.console_authentication) > 0 || var.axonserver_license_path != null && var.axonserver_license_path != ""))
+      )
+      error_message = "When deploying more than one Axon Server node (nodes_number > 1), you must provide either 'console_authentication' or 'axonserver_license_path' for proper clustering configuration."
+    }
+  }
+
   metadata {
     name      = "${var.cluster_name}-${count.index + 1}"
     namespace = var.create_namespace ? kubernetes_namespace.axonserver[0].id : data.kubernetes_namespace.axonserver[0].id
