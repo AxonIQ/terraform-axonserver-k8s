@@ -116,3 +116,15 @@ variable "assign_pods_to_different_nodes" {
   type        = bool
   default     = false
 }
+
+variable "gke_neg" {
+  description = "Enable GKE Network Endpoint Groups (NEGs) for the service"
+  type        = bool
+  default     = false
+}
+
+variable "gke_neg_zone" {
+  description = "List of zones for GKE NEG configuration"
+  type        = list(string)
+  default     = []
+}
