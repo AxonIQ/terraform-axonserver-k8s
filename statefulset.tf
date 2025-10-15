@@ -113,6 +113,11 @@ resource "kubernetes_stateful_set" "axonserver" {
             value = "${var.cluster_name}-${count.index + 1}"
           }
 
+          env {
+            name  = "JAVA_TOOL_OPTIONS"
+            value = var.java_tool_options
+          }
+
           dynamic "env" {
             for_each = length(var.console_authentication) > 0 ? [1] : []
             content {

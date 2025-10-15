@@ -128,3 +128,15 @@ variable "gke_neg_zone" {
   type        = list(string)
   default     = []
 }
+
+variable "java_tool_options" {
+  description = "Java tool options - used to pass JVM options"
+  type        = string
+  default     = ""
+}
+
+variable "accesscontrol_enabled" {
+  description = "https://docs.axoniq.io/axon-server-reference/v2025.1/axon-server/security/access-control-ee/"
+  type        = bool
+  default     = true
+}

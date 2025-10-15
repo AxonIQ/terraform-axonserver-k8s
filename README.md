@@ -16,7 +16,7 @@ For a single node deployment, you don't need to provide a license or console aut
 
 ```terraform
 module "axonserver" {
-  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.16"
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.17"
   
   axonserver_tag = "2025.1.5-jdk-17"
 
@@ -33,7 +33,7 @@ For multi-node deployments (clustering), you must provide either a license file 
 
 ```terraform
 module "axonserver" {
-  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.16"
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.17"
   
   axonserver_tag = "2025.1.5-jdk-17"
 
@@ -59,7 +59,7 @@ To enable GKE NEGs for direct pod communication:
 
 ```terraform
 module "axonserver" {
-  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.16"
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.17"
   
   axonserver_tag = "2025.1.5-jdk-17"
 
@@ -76,6 +76,31 @@ module "axonserver" {
 }
 ```
 
+### Advanced Configuration
+
+For advanced scenarios with custom JVM options and access control settings:
+
+```terraform
+module "axonserver" {
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.17"
+  
+  axonserver_tag = "2025.1.5-jdk-17"
+
+  nodes_number  = 3
+  cluster_name  = "axonserver"
+  public_domain = "axoniq.net"
+  namespace     = "axonserver"
+  
+  axonserver_license_path = file("${path.module}/axoniq.license")
+  
+  # Custom JVM options
+  java_tool_options = "-Xmx2g -Xms2g -XX:+UseG1GC"
+  
+  # Disable access control (not recommended for production)
+  accesscontrol_enabled = false
+}
+```
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -89,6 +114,8 @@ module "axonserver" {
 | <a name="input_axonserver_license_path"></a> [axonserver_license_path](#input_axonserver_license_path) | Path to the Axon Server license file. Required for multi-node deployments (nodes_number > 1) unless `console_authentication` is provided | `string` | `""` | conditional |
 | <a name="input_console_authentication"></a> [console_authentication](#input_console_authentication) | Console authentication token for Axon Server Cloud. Required for multi-node deployments (nodes_number > 1) unless `axonserver_license_path` is provided | `string` | `""` | conditional |
 | <a name="input_axonserver_properties"></a> [axonserver_properties](#input_axonserver_properties) | Custom Axon Server properties file content. If not provided, a default configuration will be generated | `string` | `""` | no |
+| <a name="input_java_tool_options"></a> [java_tool_options](#input_java_tool_options) | Java tool options for passing custom JVM options to Axon Server (e.g., heap size, GC settings) | `string` | `""` | no |
+| <a name="input_accesscontrol_enabled"></a> [accesscontrol_enabled](#input_accesscontrol_enabled) | Enable Axon Server [access control](https://docs.axoniq.io/axon-server-reference/v2025.1/axon-server/security/access-control-ee/). Recommended to keep enabled in production | `bool` | `true` | no |
 | <a name="input_resources_limits_cpu"></a> [resources_limits_cpu](#input_resources_limits_cpu) | CPU resource limits for Axon Server pods | `number` | `1` | no |
 | <a name="input_resources_limits_memory"></a> [resources_limits_memory](#input_resources_limits_memory) | Memory resource limits for Axon Server pods | `string` | `"1Gi"` | no |
 | <a name="input_resources_requests_cpu"></a> [resources_requests_cpu](#input_resources_requests_cpu) | CPU resource requests for Axon Server pods | `number` | `1` | no |
@@ -125,6 +152,10 @@ When enabling GKE NEGs (`gke_neg = true`), you must provide at least one zone in
 - Load balancing directly to pods
 - Bypassing kube-proxy
 - Improved performance for gRPC connections
+
+### Access Control
+
+Access control is enabled by default (`accesscontrol_enabled = true`). This is the recommended setting for production environments. Only disable access control in development or testing scenarios where security is not a concern.
 
 ## Providers
 

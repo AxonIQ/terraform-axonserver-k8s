@@ -12,6 +12,7 @@ data "template_file" "axonserver_properties" {
     internal_token         = random_uuid.internal_token.result
     devmode_enabled        = var.devmode_enabled
     console_authentication = var.console_authentication
+    accesscontrol_enabled  = var.accesscontrol_enabled
   }
 }
 
