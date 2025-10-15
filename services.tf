@@ -6,6 +6,7 @@ resource "kubernetes_service" "axonserver" {
     namespace = var.create_namespace ? kubernetes_namespace.axonserver[0].id : data.kubernetes_namespace.axonserver[0].id
     labels = {
       app     = "${var.cluster_name}-${count.index + 1}"
+      run     = "${var.cluster_name}-${count.index + 1}"
       cluster = var.cluster_name
     }
     annotations = {
@@ -17,6 +18,7 @@ resource "kubernetes_service" "axonserver" {
   spec {
     selector = {
       app     = "${var.cluster_name}-${count.index + 1}"
+      run     = "${var.cluster_name}-${count.index + 1}"
       cluster = var.cluster_name
     }
     port {
