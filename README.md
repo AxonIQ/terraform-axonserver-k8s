@@ -124,6 +124,7 @@ module "axonserver" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_axonserver_tag"></a> [axonserver_tag](#input_axonserver_tag) | [Axon Server Tag](https://hub.docker.com/r/axoniq/axonserver/tags) | `string` | `"latest"` | no |
+| <a name="input_axonserver_image"></a> [axonserver_image](#input_axonserver_image) | Axon Server image URL repo | `string` | `"axoniq/axonserver"` | no |
 | <a name="input_namespace"></a> [namespace](#input_namespace) | Kubernetes cluster namespace | `string` | `"axonserver"` | no |
 | <a name="input_create_namespace"></a> [create_namespace](#input_create_namespace) | Whether to create the namespace or use an existing one | `bool` | `true` | no |
 | <a name="input_cluster_name"></a> [cluster_name](#input_cluster_name) | Axon Server cluster name | `string` | `""` | yes |
