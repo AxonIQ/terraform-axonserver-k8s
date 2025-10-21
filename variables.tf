@@ -1,3 +1,9 @@
+variable "axonserver_image" {
+  description = "Axonserver docker image path"
+  type        = string
+  default     = "axoniq/axonserver"
+}
+
 variable "axonserver_tag" {
   description = "Axonserver Tag: https://hub.docker.com/r/axoniq/axonserver/tags"
   type        = string

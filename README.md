@@ -16,7 +16,7 @@ For a single node deployment, you don't need to provide a license or console aut
 
 ```terraform
 module "axonserver" {
-  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.17"
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.18"
   
   axonserver_tag = "2025.1.5-jdk-17"
 
@@ -33,7 +33,7 @@ For multi-node deployments (clustering), you must provide either a license file 
 
 ```terraform
 module "axonserver" {
-  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.17"
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.18"
   
   axonserver_tag = "2025.1.5-jdk-17"
 
@@ -59,7 +59,7 @@ To enable GKE NEGs for direct pod communication:
 
 ```terraform
 module "axonserver" {
-  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.17"
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.18"
   
   axonserver_tag = "2025.1.5-jdk-17"
 
@@ -82,7 +82,7 @@ For advanced scenarios with custom JVM options and access control settings:
 
 ```terraform
 module "axonserver" {
-  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.17"
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.18"
   
   axonserver_tag = "2025.1.5-jdk-17"
 
@@ -98,6 +98,24 @@ module "axonserver" {
   
   # Disable access control (not recommended for production)
   accesscontrol_enabled = false
+}
+```
+
+### Deploy your own Axon Server image
+
+If you want to deploy another Axon Server docker image, different from the one in `axoniq/axonserver`:
+
+```terraform
+module "axonserver" {
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.18"
+  
+  axonserver_tag = "2025.1.5-jdk-17"
+  axonserver_image = "eu.gcr.io/my-project/axonserver"
+
+  nodes_number  = 1
+  cluster_name  = "axonserver"
+  public_domain = "axoniq.net"
+  namespace     = "axonserver"
 }
 ```
 

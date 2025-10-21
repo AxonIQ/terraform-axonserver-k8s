@@ -71,7 +71,7 @@ resource "kubernetes_stateful_set" "axonserver" {
 
         container {
           name              = "${var.cluster_name}-${count.index + 1}"
-          image             = "axoniq/axonserver:${var.axonserver_tag}"
+          image             = "${var.axonserver_image}:${var.axonserver_tag}"
           image_pull_policy = "IfNotPresent"
 
           resources {
