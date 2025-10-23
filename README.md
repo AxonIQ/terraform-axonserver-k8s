@@ -16,7 +16,7 @@ For a single node deployment, you don't need to provide a license or console aut
 
 ```terraform
 module "axonserver" {
-  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.18"
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.19"
   
   axonserver_tag = "2025.1.5-jdk-17"
 
@@ -33,7 +33,7 @@ For multi-node deployments (clustering), you must provide either a license file 
 
 ```terraform
 module "axonserver" {
-  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.18"
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.19"
   
   axonserver_tag = "2025.1.5-jdk-17"
 
@@ -59,7 +59,7 @@ To enable GKE NEGs for direct pod communication:
 
 ```terraform
 module "axonserver" {
-  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.18"
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.19"
   
   axonserver_tag = "2025.1.5-jdk-17"
 
@@ -82,7 +82,7 @@ For advanced scenarios with custom JVM options and access control settings:
 
 ```terraform
 module "axonserver" {
-  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.18"
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.19"
   
   axonserver_tag = "2025.1.5-jdk-17"
 
@@ -107,7 +107,7 @@ If you want to deploy another Axon Server docker image, different from the one i
 
 ```terraform
 module "axonserver" {
-  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.18"
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.19"
   
   axonserver_tag = "2025.1.5-jdk-17"
   axonserver_image = "eu.gcr.io/my-project/axonserver"
@@ -182,7 +182,6 @@ Access control is enabled by default (`accesscontrol_enabled = true`). This is t
 |------|---------|
 | <a name="provider_kubernetes"></a> [kubernetes](#provider_kubernetes) | >= 2.31.0 |
 | <a name="provider_random"></a> [random](#provider_random) | >= 3.6.2 |
-| <a name="provider_template"></a> [template](#provider_template) | >= 2.2.0 |
 
 ## Requirements
 
