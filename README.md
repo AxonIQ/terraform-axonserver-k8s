@@ -16,7 +16,7 @@ For a single node deployment, you don't need to provide a license or console aut
 
 ```terraform
 module "axonserver" {
-  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.19"
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.20"
   
   axonserver_tag = "2025.1.5-jdk-17"
 
@@ -33,7 +33,7 @@ For multi-node deployments (clustering), you must provide either a license file 
 
 ```terraform
 module "axonserver" {
-  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.19"
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.20"
   
   axonserver_tag = "2025.1.5-jdk-17"
 
@@ -59,7 +59,7 @@ To enable GKE NEGs for direct pod communication:
 
 ```terraform
 module "axonserver" {
-  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.19"
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.20"
   
   axonserver_tag = "2025.1.5-jdk-17"
 
@@ -82,7 +82,7 @@ For advanced scenarios with custom JVM options and access control settings:
 
 ```terraform
 module "axonserver" {
-  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.19"
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.20"
   
   axonserver_tag = "2025.1.5-jdk-17"
 
@@ -107,7 +107,7 @@ If you want to deploy another Axon Server docker image, different from the one i
 
 ```terraform
 module "axonserver" {
-  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.19"
+  source = "git@github.com:AxonIQ/terraform-axonserver-k8s.git?ref=v1.20"
   
   axonserver_tag = "2025.1.5-jdk-17"
   axonserver_image = "eu.gcr.io/my-project/axonserver"
@@ -121,33 +121,34 @@ module "axonserver" {
 
 ## Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_axonserver_tag"></a> [axonserver_tag](#input_axonserver_tag) | [Axon Server Tag](https://hub.docker.com/r/axoniq/axonserver/tags) | `string` | `"latest"` | no |
-| <a name="input_axonserver_image"></a> [axonserver_image](#input_axonserver_image) | Axon Server image URL repo | `string` | `"axoniq/axonserver"` | no |
-| <a name="input_namespace"></a> [namespace](#input_namespace) | Kubernetes cluster namespace | `string` | `"axonserver"` | no |
-| <a name="input_create_namespace"></a> [create_namespace](#input_create_namespace) | Whether to create the namespace or use an existing one | `bool` | `true` | no |
-| <a name="input_cluster_name"></a> [cluster_name](#input_cluster_name) | Axon Server cluster name | `string` | `""` | yes |
-| <a name="input_nodes_number"></a> [nodes_number](#input_nodes_number) | Number of Axon Server nodes to deploy. When > 1, either `console_authentication` or `axonserver_license_path` is required | `number` | `1` | yes |
-| <a name="input_public_domain"></a> [public_domain](#input_public_domain) | The domain that is added to the hostname when returning hostnames to client applications | `string` | `""` | yes |
-| <a name="input_axonserver_license_path"></a> [axonserver_license_path](#input_axonserver_license_path) | Path to the Axon Server license file. Required for multi-node deployments (nodes_number > 1) unless `console_authentication` is provided | `string` | `""` | conditional |
-| <a name="input_console_authentication"></a> [console_authentication](#input_console_authentication) | Console authentication token for Axon Server Cloud. Required for multi-node deployments (nodes_number > 1) unless `axonserver_license_path` is provided | `string` | `""` | conditional |
-| <a name="input_axonserver_properties"></a> [axonserver_properties](#input_axonserver_properties) | Custom Axon Server properties file content. If not provided, a default configuration will be generated | `string` | `""` | no |
-| <a name="input_java_tool_options"></a> [java_tool_options](#input_java_tool_options) | Java tool options for passing custom JVM options to Axon Server (e.g., heap size, GC settings) | `string` | `""` | no |
-| <a name="input_accesscontrol_enabled"></a> [accesscontrol_enabled](#input_accesscontrol_enabled) | Enable Axon Server [access control](https://docs.axoniq.io/axon-server-reference/v2025.1/axon-server/security/access-control-ee/). Recommended to keep enabled in production | `bool` | `true` | no |
-| <a name="input_resources_limits_cpu"></a> [resources_limits_cpu](#input_resources_limits_cpu) | CPU resource limits for Axon Server pods | `number` | `1` | no |
-| <a name="input_resources_limits_memory"></a> [resources_limits_memory](#input_resources_limits_memory) | Memory resource limits for Axon Server pods | `string` | `"1Gi"` | no |
-| <a name="input_resources_requests_cpu"></a> [resources_requests_cpu](#input_resources_requests_cpu) | CPU resource requests for Axon Server pods | `number` | `1` | no |
-| <a name="input_resources_requests_memory"></a> [resources_requests_memory](#input_resources_requests_memory) | Memory resource requests for Axon Server pods | `string` | `"1Gi"` | no |
-| <a name="input_events_storage"></a> [events_storage](#input_events_storage) | Persistent volume size for event storage | `string` | `"5Gi"` | no |
-| <a name="input_log_storage"></a> [log_storage](#input_log_storage) | Persistent volume size for log storage | `string` | `"2Gi"` | no |
-| <a name="input_data_storage"></a> [data_storage](#input_data_storage) | Persistent volume size for data storage | `string` | `"10Gi"` | no |
-| <a name="input_plugins_storage"></a> [plugins_storage](#input_plugins_storage) | Persistent volume size for plugins storage | `string` | `"1Gi"` | no |
-| <a name="input_license_storage"></a> [license_storage](#input_license_storage) | Persistent volume size for license storage (only used with console_authentication) | `string` | `"1Gi"` | no |
-| <a name="input_devmode_enabled"></a> [devmode_enabled](#input_devmode_enabled) | Enable Axon Server development mode (disables security features) | `bool` | `false` | no |
-| <a name="input_assign_pods_to_different_nodes"></a> [assign_pods_to_different_nodes](#input_assign_pods_to_different_nodes) | Use pod anti-affinity to avoid co-location of replicas on the same Kubernetes node | `bool` | `false` | no |
-| <a name="input_gke_neg"></a> [gke_neg](#input_gke_neg) | Enable GKE Network Endpoint Groups (NEGs) for direct pod communication. When enabled, `gke_neg_zone` must be provided | `bool` | `false` | no |
-| <a name="input_gke_neg_zone"></a> [gke_neg_zone](#input_gke_neg_zone) | List of GKE zones for NEG configuration. Required when `gke_neg` is true | `list(string)` | `[]` | conditional |
+| Name                                                                                                                        | Description                                                                                                                                                                  | Type           | Default               |  Required   |
+|-----------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------|-----------------------|:-----------:|
+| <a name="input_axonserver_tag"></a> [axonserver_tag](#input_axonserver_tag)                                                 | [Axon Server Tag](https://hub.docker.com/r/axoniq/axonserver/tags)                                                                                                           | `string`       | `"latest"`            |     no      |
+| <a name="input_axonserver_image"></a> [axonserver_image](#input_axonserver_image)                                           | Axon Server image URL repo                                                                                                                                                   | `string`       | `"axoniq/axonserver"` |     no      |
+| <a name="input_image_pull_policy"></a> [image_pull_policy](#input_image_pull_policy)                                        | Determines when Kubernetes pulls a container image from the registry                                                                                                         | `string`       | `"IfNotPresent"`      |     no      |
+| <a name="input_namespace"></a> [namespace](#input_namespace)                                                                | Kubernetes cluster namespace                                                                                                                                                 | `string`       | `"axonserver"`        |     no      |
+| <a name="input_create_namespace"></a> [create_namespace](#input_create_namespace)                                           | Whether to create the namespace or use an existing one                                                                                                                       | `bool`         | `true`                |     no      |
+| <a name="input_cluster_name"></a> [cluster_name](#input_cluster_name)                                                       | Axon Server cluster name                                                                                                                                                     | `string`       | `""`                  |     yes     |
+| <a name="input_nodes_number"></a> [nodes_number](#input_nodes_number)                                                       | Number of Axon Server nodes to deploy. When > 1, either `console_authentication` or `axonserver_license_path` is required                                                    | `number`       | `1`                   |     yes     |
+| <a name="input_public_domain"></a> [public_domain](#input_public_domain)                                                    | The domain that is added to the hostname when returning hostnames to client applications                                                                                     | `string`       | `""`                  |     yes     |
+| <a name="input_axonserver_license_path"></a> [axonserver_license_path](#input_axonserver_license_path)                      | Path to the Axon Server license file. Required for multi-node deployments (nodes_number > 1) unless `console_authentication` is provided                                     | `string`       | `""`                  | conditional |
+| <a name="input_console_authentication"></a> [console_authentication](#input_console_authentication)                         | Console authentication token for Axon Server Cloud. Required for multi-node deployments (nodes_number > 1) unless `axonserver_license_path` is provided                      | `string`       | `""`                  | conditional |
+| <a name="input_axonserver_properties"></a> [axonserver_properties](#input_axonserver_properties)                            | Custom Axon Server properties file content. If not provided, a default configuration will be generated                                                                       | `string`       | `""`                  |     no      |
+| <a name="input_java_tool_options"></a> [java_tool_options](#input_java_tool_options)                                        | Java tool options for passing custom JVM options to Axon Server (e.g., heap size, GC settings)                                                                               | `string`       | `""`                  |     no      |
+| <a name="input_accesscontrol_enabled"></a> [accesscontrol_enabled](#input_accesscontrol_enabled)                            | Enable Axon Server [access control](https://docs.axoniq.io/axon-server-reference/v2025.1/axon-server/security/access-control-ee/). Recommended to keep enabled in production | `bool`         | `true`                |     no      |
+| <a name="input_resources_limits_cpu"></a> [resources_limits_cpu](#input_resources_limits_cpu)                               | CPU resource limits for Axon Server pods                                                                                                                                     | `number`       | `1`                   |     no      |
+| <a name="input_resources_limits_memory"></a> [resources_limits_memory](#input_resources_limits_memory)                      | Memory resource limits for Axon Server pods                                                                                                                                  | `string`       | `"1Gi"`               |     no      |
+| <a name="input_resources_requests_cpu"></a> [resources_requests_cpu](#input_resources_requests_cpu)                         | CPU resource requests for Axon Server pods                                                                                                                                   | `number`       | `1`                   |     no      |
+| <a name="input_resources_requests_memory"></a> [resources_requests_memory](#input_resources_requests_memory)                | Memory resource requests for Axon Server pods                                                                                                                                | `string`       | `"1Gi"`               |     no      |
+| <a name="input_events_storage"></a> [events_storage](#input_events_storage)                                                 | Persistent volume size for event storage                                                                                                                                     | `string`       | `"5Gi"`               |     no      |
+| <a name="input_log_storage"></a> [log_storage](#input_log_storage)                                                          | Persistent volume size for log storage                                                                                                                                       | `string`       | `"2Gi"`               |     no      |
+| <a name="input_data_storage"></a> [data_storage](#input_data_storage)                                                       | Persistent volume size for data storage                                                                                                                                      | `string`       | `"10Gi"`              |     no      |
+| <a name="input_plugins_storage"></a> [plugins_storage](#input_plugins_storage)                                              | Persistent volume size for plugins storage                                                                                                                                   | `string`       | `"1Gi"`               |     no      |
+| <a name="input_license_storage"></a> [license_storage](#input_license_storage)                                              | Persistent volume size for license storage (only used with console_authentication)                                                                                           | `string`       | `"1Gi"`               |     no      |
+| <a name="input_devmode_enabled"></a> [devmode_enabled](#input_devmode_enabled)                                              | Enable Axon Server development mode (disables security features)                                                                                                             | `bool`         | `false`               |     no      |
+| <a name="input_assign_pods_to_different_nodes"></a> [assign_pods_to_different_nodes](#input_assign_pods_to_different_nodes) | Use pod anti-affinity to avoid co-location of replicas on the same Kubernetes node                                                                                           | `bool`         | `false`               |     no      |
+| <a name="input_gke_neg"></a> [gke_neg](#input_gke_neg)                                                                      | Enable GKE Network Endpoint Groups (NEGs) for direct pod communication. When enabled, `gke_neg_zone` must be provided                                                        | `bool`         | `false`               |     no      |
+| <a name="input_gke_neg_zone"></a> [gke_neg_zone](#input_gke_neg_zone)                                                       | List of GKE zones for NEG configuration. Required when `gke_neg` is true                                                                                                     | `list(string)` | `[]`                  | conditional |
 
 ## Outputs
 

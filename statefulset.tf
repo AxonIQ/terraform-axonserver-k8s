@@ -72,7 +72,7 @@ resource "kubernetes_stateful_set" "axonserver" {
         container {
           name              = "${var.cluster_name}-${count.index + 1}"
           image             = "${var.axonserver_image}:${var.axonserver_tag}"
-          image_pull_policy = "IfNotPresent"
+          image_pull_policy = var.image_pull_policy
 
           resources {
             limits = {
@@ -138,7 +138,7 @@ resource "kubernetes_stateful_set" "axonserver" {
 
           volume_mount {
             name       = "log"
-            mount_path = "/axonserver/logs"
+            mount_path = "/axonserver/log"
           }
 
           volume_mount {

@@ -10,6 +10,12 @@ variable "axonserver_tag" {
   default     = "latest"
 }
 
+variable "image_pull_policy" {
+  description = "Control when the kubelet should pull a container image from a registry"
+  type        = string
+  default     = "IfNotPresent"
+}
+
 variable "create_namespace" {
   type    = bool
   default = true
